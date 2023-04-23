@@ -1,0 +1,16 @@
+{
+  "name": "mtg-card-exporter",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "papaparse": "^5.4.1",
+    "react-copy-to-clipboard": "^5.1.0",
+    "react-scripts": "^5.0.1"
+  }
+}
