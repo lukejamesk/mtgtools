@@ -9,8 +9,5 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "papaparse": "^5.4.1",
-    "react-copy-to-clipboard": "^5.1.0",
-    "react-scripts": "^5.0.1"
   }
 }

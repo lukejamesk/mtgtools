@@ -1,14 +1,14 @@
+import React, { useRef, useState } from 'react';
+import { Accordion, AccordionDetails, AccordionSummary, Button, Card, CardContent, CardHeader, FormControl, FormControlLabel, FormLabel, Grid, Radio, RadioGroup, Snackbar, TextField, Typography } from '@mui/material';
 import './App.css';
-import { Accordion, AccordionDetails, AccordionSummary, Button, Card, CardContent, CardHeader, FormControl, FormControlLabel, FormLabel, Grid, Paper, Radio, RadioGroup, Snackbar, TextField, Typography } from '@mui/material';
-import { useRef, useState } from 'react';
 import { helvaultProCsvToTopDeckedConverter } from './helvaultProCsvToTopDeckedConverter';
 import useCopyToClipboard from './useCopyToClipboard';
 import { ExpandMore } from '@mui/icons-material';
 
 const App = () => {
   const [copyValue, copy] = useCopyToClipboard()
-  const [result, setResult] = useState();
-  const [importVal, setImportVal] = useState();
+  const [result, setResult] = useState('');
+  const [importVal, setImportVal] = useState('');
   const [sourceVal, setSourceVal] = useState('helvault');
   const [targetVal, setTargetVal] = useState('topdecked');
   const [expanded, setExpanded] = useState('source');
@@ -16,19 +16,20 @@ const App = () => {
   const targetEl = useRef(null);
 
   const handleOnClick = () => {
-    const converted = helvaultProCsvToTopDeckedConverter(sourceVal, targetVal, importVal);
+    const converted: string = helvaultProCsvToTopDeckedConverter(sourceVal, targetVal, importVal);
     setResult(converted);
     setExpanded('target');
-    copy(converted)
+    if (copy) {
+      copy(converted)
+    }
   }
 
   const handleSelectConverted = () => {
-    debugger
-    targetEl.current.select();
+    (targetEl.current as any).select();
   }
 
-  const handleAccordionChange = (panel) => (event, isExpanded) => {
-    setExpanded(isExpanded ? panel : false);
+  const handleAccordionChange = (panel: string) => (event: any, isExpanded: boolean) => {
+    setExpanded(isExpanded ? panel : '');
   }
 
   return (
@@ -36,11 +37,11 @@ const App = () => {
       <Accordion
         expanded={expanded === 'source'}
         onChange={handleAccordionChange('source')} 
-        expandIcon={<ExpandMore />}
       >
         <AccordionSummary
           aria-controls="panel1a-content"
           id="panel1a-header"
+          expandIcon={<ExpandMore />}
         >
           <Typography variant='h6'>1 - Source CSV</Typography>
         </AccordionSummary>
@@ -118,11 +119,11 @@ const App = () => {
         disabled={!result}
         expanded={expanded === 'target'}
         onChange={handleAccordionChange('target')}
-        expandIcon={<ExpandMore />}
       >
         <AccordionSummary
           aria-controls="panel2a-content"
           id="panel2a-header"
+          expandIcon={<ExpandMore />}
         >
           <Typography variant='h6'>2 - Target CSV Result</Typography>
         </AccordionSummary>
@@ -150,7 +151,7 @@ const App = () => {
                     ></TextField>
                   </FormControl>
                   <Snackbar
-                    open={copyValue}
+                    open={(copyValue ?? '').length > 0}
                     autoHideDuration={3000}
                     message="CSV has been copied to clipboard"
                   />

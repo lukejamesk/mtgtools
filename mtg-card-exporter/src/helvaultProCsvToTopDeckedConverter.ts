@@ -1,14 +1,46 @@
 import Papa from 'papaparse'
-export const helvaultProCsvToTopDeckedConverter = (source, to, csvString) => {
+
+type MtgCardJson = {
+    QUANTITY: string,
+    NAME: string,
+    SETCODE: string,
+    SETNAME?: string,
+    FOIL?: string,
+    PRICE?: string,
+    RARITY?: string,
+    ID?: string,
+    'COLLECTOR NUMBER'?: string,
+}
+
+type TopDeckedJson = MtgCardJson;
+
+type HelvaultJson = {
+    collector_number: string,
+    name: string,
+    quantity: string,
+    set_code: string,
+    set_name: string,
+    scryfall_id: string
+}
+
+type MoxFieldJson = {
+    Count: string,
+    Name: string,
+    Edition: string,
+    Foil?: string,
+    'Collector Number'?: string
+}
+
+export const helvaultProCsvToTopDeckedConverter = (source:string, to: string, csvString: string) => {
     const sourceResult = Papa.parse(csvString, {
         header: true
     })
 
-    let convertedJson;
+    let convertedJson: MtgCardJson[] = [];
 
     switch (source) {
         case "helvault":
-            convertedJson = sourceResult.data.map(({ collector_number, name, quantity, set_code, set_name, scryfall_id}) => ({
+            convertedJson = (sourceResult.data as HelvaultJson[]).map(({quantity, name, set_code, set_name, scryfall_id, collector_number}: HelvaultJson) => ({
                 QUANTITY: quantity,
                 NAME: name,
                 SETCODE: set_code,
@@ -21,10 +53,10 @@ export const helvaultProCsvToTopDeckedConverter = (source, to, csvString) => {
             }))
         break;
         case "topdecked":
-            convertedJson = sourceResult.data;
+            convertedJson = (sourceResult.data as TopDeckedJson[]);
         break;
         case "moxfield":
-            convertedJson = sourceResult.data.map(row => ({
+            convertedJson = (sourceResult.data as MoxFieldJson[]).map(row => ({
                 QUANTITY: row.Count,
                 NAME: row.Name,
                 SETCODE: row.Edition,
@@ -38,12 +70,13 @@ export const helvaultProCsvToTopDeckedConverter = (source, to, csvString) => {
         break;
         default:
             console.error('No valid source selected')
+            break;
         
     }
 
     console.log('converted', convertedJson)
 
-    let convertedResult;
+    let convertedResult: string = '';
 
 
     switch (to) {
@@ -71,13 +104,5 @@ export const helvaultProCsvToTopDeckedConverter = (source, to, csvString) => {
             console.error('No valid source selected')
     }
         
-
-
-    // const result = Papa.unparse(convertedJson, {
-    //     quotes: true,
-    //     header: true,
-
-    // })
-    console.log(convertedResult)
     return convertedResult;
 }
